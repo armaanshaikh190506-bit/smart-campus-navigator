@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Campus Navigator | Dijkstra Shortest Path Algorithm</title>
+  <meta name="description" content="A college campus navigation system modeling campus landmarks as a weighted undirected graph and computing shortest walking paths using Dijkstra's algorithm. Built as a DSA mini-project for TCET Mumbai University.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="container header-inner">
+      <div class="brand-section">
+        <div class="brand-icon" aria-hidden="true">
+          <!-- Compass / Navigation SVG Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-14.5l6 6-8.5 2.5L11 5.5z"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1>Smart Campus Navigator</h1>
+          <p class="subtitle">TCET Mumbai &bull; Department of Information Technology &bull; DSA Mini-Project</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-dsa">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          Dijkstra's Algorithm (C &amp; Web)
+        </span>
+        <span class="badge badge-college">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          Weighted Graph O(V²)
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Brief Project Information Banner -->
+    <aside class="project-banner" aria-label="Project overview">
+      <div class="banner-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <p>
+          <strong>About this Project:</strong> The Smart Campus Navigator models six key college landmarks as vertices 
+          in an undirected weighted graph, where walking pathways form edges with distance weights. 
+          Selecting any starting point and destination calculates the mathematically optimal shortest route using 
+          <strong>Dijkstra's Greedy Algorithm</strong>.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Core Grid Layout -->
+    <div class="main-grid">
+
+      <!-- LEFT COLUMN: Route Planner & Directions -->
+      <div class="left-column">
+
+        <!-- Route Selection Card -->
+        <section class="card" aria-labelledby="plannerHeading">
+          <h2 id="plannerHeading" class="card-title">
+            <span class="card-title-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+              </svg>
+              Plan Campus Route
+            </span>
+          </h2>
+
+          <form id="routeForm" onsubmit="event.preventDefault();">
+            <!-- Starting Location -->
+            <div class="form-group">
+              <label for="startSelect" class="form-label">
+                <span class="label-dot start" aria-hidden="true"></span>
+                Starting Landmark (Source)
+              </label>
+              <div class="select-wrapper">
+                <select id="startSelect" class="select-control" aria-label="Select starting landmark">
+                  <!-- Populated by script.js -->
+                </select>
+                <span class="select-arrow" aria-hidden="true">&#9662;</span>
+              </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="swap-container">
+              <button type="button" id="btnSwap" class="btn-swap" title="Swap start and destination">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                  <polyline points="17 14 12 9 7 14"></polyline>
+                  <line x1="12" y1="9" x2="12" y2="21"></line>
+                </svg>
+                Swap Points
+              </button>
+            </div>
+
+            <!-- Destination Location -->
+            <div class="form-group">
+              <label for="destSelect" class="form-label">
+                <span class="label-dot dest" aria-hidden="true"></span>
+                Destination Landmark (Target)
+              </label>
+              <div class="select-wrapper">
+                <select id="destSelect" class="select-control" aria-label="Select destination landmark">
+                  <!-- Populated by script.js -->
+                </select>
+                <span class="select-arrow" aria-hidden="true">&#9662;</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button type="button" id="btnCalculate" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                Find Shortest Route
+              </button>
+              <button type="button" id="btnReset" class="btn btn-reset" title="Reset navigator to default view">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                Reset
+              </button>
+            </div>
+          </form>
+
+          <!-- Quick Test Presets -->
+          <div class="preset-section">
+            <h3 class="preset-title">Academic Reference Benchmarks</h3>
+            <div class="preset-pills">
+              <button type="button" class="btn-preset" data-src="0" data-dest="4">
+                <span><strong>Benchmark 1:</strong> Main Gate &rarr; Auditorium</span>
+                <span class="preset-dist">10 units</span>
+              </button>
+              <button type="button" class="btn-preset" data-src="0" data-dest="1">
+                <span><strong>Benchmark 2:</strong> Main Gate &rarr; IT Dept (via Lib)</span>
+                <span class="preset-dist">3 units</span>
+              </button>
+              <button type="button" class="btn-preset" data-src="0" data-dest="2">
+                <span><strong>Benchmark 3:</strong> Main Gate &rarr; Library (Direct)</span>
+                <span class="preset-dist">2 units</span>
+              </button>
+              <button type="button" class="btn-preset" data-src="0" data-dest="0">
+                <span><strong>Benchmark 4:</strong> Same Source &amp; Destination</span>
+                <span class="preset-dist">0 units</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Route Summary Card -->
+        <section class="card" aria-labelledby="summaryHeading">
+          <h2 id="summaryHeading" class="card-title">
+            <span class="card-title-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              Computed Route Summary
+            </span>
+            <span id="routeStatusBadge" class="stat-badge">Ready</span>
+          </h2>
+
+          <div class="result-stat-box">
+            <div class="stat-group">
+              <div class="stat-label">Calculated Shortest Distance</div>
+              <div id="totalDistance" class="stat-value">--</div>
+            </div>
+            <div class="stat-group" style="text-align: right;">
+              <div class="stat-label">Algorithm Used</div>
+              <div style="font-weight: 700; color:#1e40af; font-size:1rem;">Dijkstra's S.P.</div>
+            </div>
+          </div>
+
+          <!-- Path Nodes Chain -->
+          <div class="path-sequence-container">
+            <div class="path-sequence-label">Optimal Sequence of Landmarks:</div>
+            <div id="routePathChain" class="path-chain">
+              <!-- Rendered by script.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Turn-by-Turn Directions Card -->
+        <section class="card" aria-labelledby="directionsHeading">
+          <h2 id="directionsHeading" class="card-title">
+            <span class="card-title-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+              Step-by-Step Navigation
+            </span>
+          </h2>
+
+          <div id="stepList" class="step-list" aria-live="polite">
+            <!-- Rendered by script.js -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Interactive Graph & Educational Tracing -->
+      <div class="right-column">
+
+        <!-- Campus Graph Visualization Card -->
+        <section class="card graph-card" aria-labelledby="graphHeading">
+          <div class="graph-header">
+            <h2 id="graphHeading" class="card-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">
+              <span class="card-title-left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Interactive Schematic Campus Map
+              </span>
+            </h2>
+
+            <div class="graph-legend">
+              <span class="legend-item"><span class="legend-color start"></span> Start</span>
+              <span class="legend-item"><span class="legend-color dest"></span> Destination</span>
+              <span class="legend-item"><span class="legend-color path"></span> Shortest Route</span>
+              <span class="legend-item"><span class="legend-color normal"></span> Walkway</span>
+            </div>
+          </div>
+
+          <!-- SVG Canvas -->
+          <div class="svg-container">
+            <svg id="campusGraph" viewBox="0 0 820 500" preserveAspectRatio="xMidYMid meet" aria-label="Campus Graph SVG Map">
+              <!-- Rendered dynamically by script.js -->
+            </svg>
+          </div>
+          <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; text-align: center;">
+            &bull; Click any landmark node directly on the campus map to quickly select it as a destination.
+          </p>
+        </section>
+
+        <!-- Dijkstra Execution Trace Card -->
+        <section class="card" aria-labelledby="traceHeading">
+          <h2 id="traceHeading" class="card-title">
+            <span class="card-title-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              Dijkstra Algorithm Execution Trace
+            </span>
+          </h2>
+
+          <p style="font-size: 0.825rem; color: #475569; margin-bottom: 0.5rem;">
+            Step-by-step breakdown of how the greedy algorithm finalized minimum distance vertices and relaxed connected edges:
+          </p>
+
+          <div class="trace-container">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>Iteration</th>
+                  <th>Vertex Chosen (minDistance)</th>
+                  <th>Finalized dist[u]</th>
+                  <th>Edge Relaxations (dist[u] + wt &lt; dist[v])</th>
+                  <th>Distance Array State dist[0..5]</th>
+                </tr>
+              </thead>
+              <tbody id="traceTableBody">
+                <!-- Rendered dynamically by script.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Adjacency Matrix & Theory Card -->
+        <section class="card" aria-labelledby="matrixHeading">
+          <h2 id="matrixHeading" class="card-title">
+            <span class="card-title-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="3" y1="15" x2="21" y2="15"></line>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+                <line x1="15" y1="3" x2="15" y2="21"></line>
+              </svg>
+              Adjacency Matrix &amp; Complexity Analysis
+            </span>
+          </h2>
+
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+            <!-- Adjacency Matrix Table -->
+            <div id="matrixContainer" class="matrix-container">
+              <!-- Rendered by script.js -->
+            </div>
+
+            <!-- Analysis Notes -->
+            <div>
+              <p style="font-size: 0.85rem; color: #334155; margin-bottom: 0.5rem;">
+                <strong>Graph Representation:</strong> The campus layout is stored as a 6&times;6 2D array <code>graph[6][6]</code>. 
+                Highlighted blue cells indicate the exact walkway edges traversed in the current computed shortest route.
+              </p>
+              <div class="theory-grid" style="grid-template-columns: 1fr;">
+                <div class="theory-box" style="padding: 0.75rem;">
+                  <h4>Time Complexity</h4>
+                  <p><strong>O(V²)</strong> &mdash; Finding the unvisited vertex with minimum distance takes O(V) via linear search, executed V times: V &times; V = O(V²).</p>
+                </div>
+                <div class="theory-box" style="padding: 0.75rem;">
+                  <h4>Space Complexity</h4>
+                  <p><strong>O(V²)</strong> for the 6&times;6 adjacency matrix + <strong>O(V)</strong> auxiliary arrays for <code>dist[]</code>, <code>visited[]</code>, and <code>parent[]</code>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+    <!-- Viva Questions & Academic Reference Section -->
+    <section class="card" style="margin-top: 1rem;" aria-labelledby="vivaHeading">
+      <h2 id="vivaHeading" class="card-title">
+        <span class="card-title-left">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          Academic Viva Preparation Notes
+        </span>
+      </h2>
+
+      <div class="theory-grid">
+        <div class="theory-box">
+          <h4>1. Why Dijkstra's Algorithm?</h4>
+          <p>
+            Dijkstra's algorithm solves the single-source shortest path problem on graphs with non-negative edge weights using a greedy strategy. 
+            Campus walkways have non-negative physical distances, making it optimal.
+          </p>
+        </div>
+        <div class="theory-box">
+          <h4>2. Role of the Parent Array</h4>
+          <p>
+            While <code>dist[]</code> stores the numerical shortest distance, <code>parent[v]</code> records which predecessor vertex updated <code>v</code>. 
+            Tracing <code>parent[]</code> backwards from destination to source reconstructs the exact sequence of campus turns.
+          </p>
+        </div>
+        <div class="theory-box">
+          <h4>3. Why Main Gate &rarr; Auditorium = 10?</h4>
+          <p>
+            Direct path via Library to Auditorium is <code>2 + 10 = 12</code> units. 
+            However, path via <code>Main Gate (0) &rarr; Library (2) &rarr; IT Dept (1) &rarr; Canteen (3) &rarr; Auditorium (4)</code> 
+            totals <code>2 + 1 + 5 + 2 = 10</code> units, which Dijkstra correctly identifies as the global minimum!
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Application Footer -->
+  <footer class="app-footer">
+    <div class="container">
+      <p>
+        TCET Smart Campus Navigator &bull; Second Year IT Engineering Mini-Project &bull; 
+        Built with C &amp; Vanilla Web Technologies (HTML, CSS, SVG, JS).
+      </p>
+      <p style="margin-top: 0.25rem;">
+        Distances are illustrative academic units for structural graph demonstration.
+      </p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
